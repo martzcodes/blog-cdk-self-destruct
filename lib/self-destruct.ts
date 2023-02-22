@@ -42,8 +42,6 @@ export class SelfDestruct extends Construct {
       inputPath: "$.Executions",
     });
 
-    listExecutions.next(executionsMap);
-
     const stopExecution = new CallAwsService(this, `StopExecution`, {
       action: "stopExecution",
       iamAction: "states:StopExecution",
@@ -86,16 +84,16 @@ export class SelfDestruct extends Construct {
       service: "cloudformation",
     });
 
-    wait.next(deleteStack);
+  const finished = new Succeed(this, `Finished`);
 
-    const finished = new Succeed(this, `Finished`);
-    deleteStack.next(finished);
+  listExecutions.next(executionsMap);
+  executionsMap.next(wasDelete);
+  wait.next(deleteStack);
+  deleteStack.next(finished);
 
-    executionsMap.next(wasDelete);
-
-    const sm = new StateMachine(this, `SelfDestructMachine`, {
-      definition: listExecutions,
-    });
+  const sm = new StateMachine(this, `SelfDestructMachine`, {
+    definition: listExecutions,
+  });
 
     new AwsCustomResource(this, `SelfDestructCR`, {
       onCreate: {
