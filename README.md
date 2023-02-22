@@ -1,14 +1,11 @@
-# Welcome to your CDK TypeScript project
+# This ~~Message~~ Stack Will Self Destruct in...
 
-This is a blank project for CDK development with TypeScript.
+The `./lib/self-destruct.ts` construct, when added to your Stack with a Duration, will self-destruct the stack after that amount of time has passed.  This could be useful for developer stacks or CI/CD stacks so that they clean up after them selves.
 
-The `cdk.json` file tells the CDK Toolkit how to execute your app.
+Example:
 
-## Useful commands
-
-* `npm run build`   compile typescript to js
-* `npm run watch`   watch for changes and compile
-* `npm run test`    perform the jest unit tests
-* `cdk deploy`      deploy this stack to your default AWS account/region
-* `cdk diff`        compare deployed stack with current state
-* `cdk synth`       emits the synthesized CloudFormation template
+```typescript
+new SelfDestruct(this, `SelfDestruct`, {
+  duration: Duration.minutes(3),
+});
+```
